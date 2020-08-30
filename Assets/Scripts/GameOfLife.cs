@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GameOfLife : MonoBehaviour
 {
+    [SerializeField] private UIController uiController;
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private Vector2Int gridSize;
-    // 128/96
     [SerializeField] private bool randomizeAtStart;
     [SerializeField, Range(0.01f, 2f)] private float stepsRate;
 
@@ -16,6 +16,8 @@ public class GameOfLife : MonoBehaviour
     private bool play = true;
     private float stepCooldown;
     private Collider2D lastHitCell;
+    private int generation = 0;
+    private int liveCells = 0;
 
     void Start()
     {
@@ -38,30 +40,14 @@ public class GameOfLife : MonoBehaviour
         {
             play = false;
         }
+        uiController.SetPauseView(play);
+        uiController.UpdateLiveCells(liveCells);
     }
 
     void Update()
     {
-        if (Input.GetButtonDown("Pause"))
-        {
-            play = !play;
-            Debug.Log($"Pause: {!play}");
-        }
-
-        if (Input.GetButton("SwitchCellState"))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(mainCam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit && hit.collider != lastHitCell)
-            {
-                lastHitCell = hit.collider;
-                var cell = lastHitCell.GetComponent<CellController>();
-                cell.SwitchState();
-            }
-        }
-        if (Input.GetButtonUp("SwitchCellState"))
-        {
-            lastHitCell = null;
-        }
+        PauseInput();
+        SwitchCellsByInput();
 
         if (!play) return;
 
@@ -69,6 +55,9 @@ public class GameOfLife : MonoBehaviour
         {
             stepCooldown = stepsRate;
             RenderNextStep();
+            generation++;
+            uiController.UpdateGeneration(generation);
+            uiController.UpdateLiveCells(liveCells);
         }
         else
         {
@@ -96,18 +85,50 @@ public class GameOfLife : MonoBehaviour
         {
             bool newState = Random.Range(0, 2) == 0;
             cell.NewState = newState;
+            if (cell.NewState) liveCells++;
             cell.StepNext();
+        }
+    }
+
+    private void PauseInput()
+    {
+        if (Input.GetButtonDown("Pause"))
+        {
+            play = !play;
+            uiController.SetPauseView(play);
+        }
+    }
+
+    private void SwitchCellsByInput()
+    {
+        if (Input.GetButton("SwitchCellState"))
+        {
+            RaycastHit2D hit = Physics2D.Raycast(mainCam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit && hit.collider != lastHitCell)
+            {
+                lastHitCell = hit.collider;
+                var cell = lastHitCell.GetComponent<CellController>();
+                cell.SwitchState();
+                liveCells += cell.IsAlive ? 1 : -1;
+                uiController.UpdateLiveCells(liveCells);
+            }
+        }
+        if (Input.GetButtonUp("SwitchCellState"))
+        {
+            lastHitCell = null;
         }
     }
 
     private void RenderNextStep()
     {
+        liveCells = 0;
         for (int x = 0; x < gridSize.x; x++)
         {
             for (int y = 0; y < gridSize.y; y++)
             {
                 CellController cell = cells[x, y];
                 cell.NewState = CalculateCellsNewState(cell.IsAlive, x, y);
+                if (cell.NewState) liveCells++;
             }
         }
         foreach (CellController cell in cells)
