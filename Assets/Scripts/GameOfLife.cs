@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class GameOfLife : MonoBehaviour
 {
+    public float StespRate { get; set; }
+
     [SerializeField] private UIController uiController;
     [SerializeField] private GameObject cellPrefab;
-    [SerializeField] private Vector2Int gridSize;
-    [SerializeField] private bool randomizeAtStart;
-    [SerializeField, Range(0.01f, 2f)] private float stepsRate;
 
     private Camera mainCam;
+    private Vector2Int gridSize;
     private Vector2 cellSize;
     private CellController[,] cells;
     private bool play = true;
@@ -19,16 +19,22 @@ public class GameOfLife : MonoBehaviour
     private int generation = 0;
     private int liveCells = 0;
 
-    void Start()
+    void Awake()
     {
         mainCam = Camera.main;
-        mainCam.transform.position = new Vector3(gridSize.x / 2, gridSize.y / 2, mainCam.transform.position.z);
 
-        stepCooldown = stepsRate;
+        stepCooldown = StespRate;
 
         var cellSpriteRenderer = cellPrefab.GetComponent<SpriteRenderer>();
         cellSize = new Vector2(cellSpriteRenderer.sprite.bounds.size.x, cellSpriteRenderer.sprite.bounds.size.y);
+    }
 
+    public void ResetGameOfLife(Vector2Int gridSize, bool randomizeAtStart)
+    {
+        this.gridSize = gridSize;
+        mainCam.transform.position = new Vector3(gridSize.x / 2, gridSize.y / 2, mainCam.transform.position.z);
+
+        DestroyOldGrid();
         CreateGrid(gridSize.x, gridSize.y);
         // I could've set the randomization at the grid creation for better run time (going through the grid only once)
         //  but I'd rather have the two functions seperated
@@ -53,7 +59,7 @@ public class GameOfLife : MonoBehaviour
 
         if (stepCooldown <= 0)
         {
-            stepCooldown = stepsRate;
+            stepCooldown = StespRate;
             RenderNextStep();
             generation++;
             uiController.UpdateGeneration(generation);
@@ -63,6 +69,16 @@ public class GameOfLife : MonoBehaviour
         {
             stepCooldown -= Time.deltaTime;
         }
+    }
+
+    private void DestroyOldGrid()
+    {
+        if (cells == null) return;
+        foreach (var cell in cells)
+        {
+            Destroy(cell.gameObject);
+        }
+        cells = null;
     }
 
     private void CreateGrid(int width, int height)
