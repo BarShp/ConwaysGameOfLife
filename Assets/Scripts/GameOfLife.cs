@@ -32,6 +32,8 @@ public class GameOfLife : MonoBehaviour
     public void ResetGameOfLife(Vector2Int gridSize, bool randomizeAtStart)
     {
         this.gridSize = gridSize;
+        liveCells = 0;
+        generation = 0;
         mainCam.transform.position = new Vector3(gridSize.x / 2, gridSize.y / 2, mainCam.transform.position.z);
 
         DestroyOldGrid();
@@ -48,6 +50,7 @@ public class GameOfLife : MonoBehaviour
         }
         uiController.SetPauseView(play);
         uiController.UpdateLiveCells(liveCells);
+        uiController.UpdateGeneration(generation);
     }
 
     void Update()
