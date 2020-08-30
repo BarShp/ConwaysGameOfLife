@@ -15,6 +15,7 @@ public class GameOfLife : MonoBehaviour
     private CellController[,] cells;
     private bool play = true;
     private float stepCooldown;
+    private Collider2D lastHitCell;
 
     void Start()
     {
@@ -47,12 +48,13 @@ public class GameOfLife : MonoBehaviour
             Debug.Log($"Pause: {!play}");
         }
 
-        if (Input.GetButtonDown("SwitchCellState"))
+        if (Input.GetButton("SwitchCellState"))
         {
             RaycastHit2D hit = Physics2D.Raycast(mainCam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit)
+            if (hit && hit.collider != lastHitCell)
             {
-                var cell = hit.collider.GetComponent<CellController>();
+                lastHitCell = hit.collider;
+                var cell = lastHitCell.GetComponent<CellController>();
                 cell.SwitchState();
             }
         }
