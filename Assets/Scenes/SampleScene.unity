@@ -250,3 +250,4 @@ MonoBehaviour:
   cellPrefab: {fileID: 1226481142363022119, guid: ba63b1c6bcb21c243bd9f7c72f061e1a,
     type: 3}
   gridSize: {x: 128, y: 96}
+  randomizeAtStart: 0

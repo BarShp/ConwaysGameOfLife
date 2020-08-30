@@ -7,6 +7,7 @@ public class GameOfLife : MonoBehaviour
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private Vector2Int gridSize;
     [Range(0.00001f, 3f)] private float stepsRate;
+    [SerializeField] private bool randomizeAtStart;
 
     private Vector2 cellSize;
     private CellController[,] cells;
@@ -20,6 +21,12 @@ public class GameOfLife : MonoBehaviour
         cellSize = new Vector2(cellSpriteRenderer.sprite.bounds.size.x, cellSpriteRenderer.sprite.bounds.size.y);
 
         CreateGrid(gridSize.x, gridSize.y);
+        // I could've set the randomization at the grid creation for better run time (going through the grid only once)
+        //  but I'd rather have the two functions seperated
+        if (randomizeAtStart)
+        {
+            RandomizeGridState();
+        }
     }
 
     void Update()
@@ -41,4 +48,18 @@ public class GameOfLife : MonoBehaviour
             }
         }
     }
+
+    private void RandomizeGridState()
+    {
+        for (int x = 0; x < gridSize.x; x++)
+        {
+            for (int y = 0; y < gridSize.y; y++)
+            {
+                bool newState = Random.Range(0, 2) == 0;
+                cells[x, y].SetState(newState);
+            }
+        }
+    }
+
+    // Maybe add enumarator to run through the grid
 }

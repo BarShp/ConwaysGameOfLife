@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class CellController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    // public bool NewState { get; set; }
+    // Consider using "shouldBeAlive" and on stepToNew automatically update to alive/dead as needed
+    // Thus allowing to update the state of only those who should be alive
 
-    // Update is called once per frame
-    void Update()
+    private bool oldState;
+    // private bool newState;
+
+    public void SetState(bool newState)
     {
-        
+        oldState = newState;
+        // TODO: Make the colors serializeable
+        spriteRenderer.color = newState ? Color.white : Color.black;
     }
 }
