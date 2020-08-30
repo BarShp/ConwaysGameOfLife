@@ -58,6 +58,10 @@ public class GameOfLife : MonoBehaviour
                 cell.SwitchState();
             }
         }
+        if (Input.GetButtonUp("SwitchCellState"))
+        {
+            lastHitCell = null;
+        }
 
         if (!play) return;
 
@@ -103,23 +107,30 @@ public class GameOfLife : MonoBehaviour
             for (int y = 0; y < gridSize.y; y++)
             {
                 CellController cell = cells[x, y];
-                int liveNeighborsCount = CountLiveNeighbors(x, y);
-
-                if (cell.IsAlive)
-                {
-                    // lower than 2 / higher than 3 - false
-                    cell.NewState = liveNeighborsCount == 2 || liveNeighborsCount == 3;
-                }
-                else
-                {
-                    cell.NewState = liveNeighborsCount == 3;
-                }
+                cell.NewState = CalculateCellsNewState(cell.IsAlive, x, y);
             }
         }
         foreach (CellController cell in cells)
         {
             cell.StepNext();
         }
+    }
+
+    private bool CalculateCellsNewState(bool isAlive, int x, int y)
+    {
+        int liveNeighborsCount = CountLiveNeighbors(x, y);
+
+        if (isAlive)
+        {
+            // lower than 2 / higher than 3 - false
+            return liveNeighborsCount == 2 || liveNeighborsCount == 3;
+        }
+
+        return liveNeighborsCount == 3;
+
+        // One liner for fun -
+        // int liveNeighborsCount = CountLiveNeighbors(x, y);
+        // return isAlive ? (liveNeighborsCount == 2 || liveNeighborsCount == 3) : liveNeighborsCount == 3;
     }
 
     private int CountLiveNeighbors(int x, int y)

@@ -122,3 +122,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1226481142363022112}
+  aliveColor: {r: 1, g: 0.3137255, b: 0.22352943, a: 1}
+  deadColor: {r: 0.1484069, g: 0.15345666, b: 0.21698111, a: 1}

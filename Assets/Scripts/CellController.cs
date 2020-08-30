@@ -5,12 +5,16 @@ using UnityEngine;
 public class CellController : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
-    // public bool NewState { get; set; }
-    // Consider using "shouldBeAlive" and on stepToNew automatically update to alive/dead as needed
-    // Thus allowing to update the state of only those who should be alive
+    [SerializeField] private Color aliveColor;
+    [SerializeField] private Color deadColor;
 
     public bool IsAlive { get; set; } = false;
     public bool NewState { get; set; } = false;
+
+    public void Start()
+    {
+        RenderSpriteColor();
+    }
 
     public void StepNext()
     {
@@ -26,7 +30,6 @@ public class CellController : MonoBehaviour
 
     private void RenderSpriteColor()
     {
-        // TODO: Make the colors serializeable
-        spriteRenderer.color = IsAlive ? Color.white : Color.black;
+        spriteRenderer.color = IsAlive ? aliveColor : deadColor;
     }
 }

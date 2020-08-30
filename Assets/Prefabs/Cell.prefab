@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 8d7a3aafd0c44d948babae1fa4a9dbc2, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.40792987, g: 0.47903237, b: 0.8396226, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -122,3 +122,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1226481142363022112}
+  aliveColor: {r: 0.40792987, g: 0.47903237, b: 0.8396226, a: 1}
+  deadColor: {r: 0.91659707, g: 1, b: 0.2216981, a: 1}
