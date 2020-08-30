@@ -9,13 +9,24 @@ public class CellController : MonoBehaviour
     // Consider using "shouldBeAlive" and on stepToNew automatically update to alive/dead as needed
     // Thus allowing to update the state of only those who should be alive
 
-    private bool oldState;
-    // private bool newState;
+    public bool IsAlive { get; set; } = false;
+    public bool NewState { get; set; } = false;
 
-    public void SetState(bool newState)
+    public void StepNext()
     {
-        oldState = newState;
+        IsAlive = NewState;
+        RenderSpriteColor();
+    }
+
+    public void SwitchState()
+    {
+        IsAlive = !IsAlive;
+        RenderSpriteColor();
+    }
+
+    private void RenderSpriteColor()
+    {
         // TODO: Make the colors serializeable
-        spriteRenderer.color = newState ? Color.white : Color.black;
+        spriteRenderer.color = IsAlive ? Color.white : Color.black;
     }
 }
